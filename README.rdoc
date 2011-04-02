@@ -1,0 +1,11 @@
+== Earthquake TsunamiMode
+コマンドラインtwitterクライアント Earthquake ( http://github.com/jugyo/earthquake ) を実況モードにするプラグインです
+
+tsunami_mode.rb を $HOME/.earthquake/plugins/ の中に
+移動するなりコピーするなりリンクはるなりしてください
+
+ :tsunami #K-ON #tbs
+
+のように実行すると #K-ON (1つめだけ) で検索した結果がストリームに流れます
+
+つぶやこうとすると #K-ON #tbs が文末に自動で付与されます
