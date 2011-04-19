@@ -24,22 +24,9 @@ module Earthquake
     }
     start_stream(default.merge( options || {}))
   end
-  
-  module Update
-    def update_filters
-      @update_filters ||= []
-    end
-    
-    def update_filter(&block)
-      update_filters << block
-    end
-  end
-  extend Update
 end
 
 Earthquake.init do
-  commands.delete_if{|x| x[:pattern] == %r|^[^:\$].*|}
-  
   command :tsunami do |params|
     keywords = params[1]
     search_keyword = keywords.split(/ /).first
@@ -51,10 +38,11 @@ Earthquake.init do
       :filters => [search_keyword])
     @tsunami_mode = keywords
   end
-
-  #update
-  command %r|^[^:\$].*| do |m|
-    message = @tsunami_mode.nil? ? m[0] : "#{m[0]} #{@tsunami_mode}" 
-    async { twitter.update(message) } if confirm("update '#{message}'")
+  
+  input_filter do |text|
+    unless @tsunami_mode.nil? || text[0] == ':'
+      text = "#{text} #{@tsunami_mode}"
+    end
+    text
   end
 end
