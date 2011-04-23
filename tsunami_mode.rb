@@ -15,6 +15,7 @@
 module Earthquake
   attr_accessor :tsunami_mode
   def self.reconnect(options = nil)
+    config[:prompt] = "⚡ "
     @tsunami_mode = nil
     item_queue.clear
     default = {
@@ -36,6 +37,7 @@ Earthquake.init do
       :method => 'POST',
       :ssl => false,
       :filters => [search_keyword])
+    config[:prompt] = "☢ "
     @tsunami_mode = keywords
   end
   
