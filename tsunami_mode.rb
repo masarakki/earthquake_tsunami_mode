@@ -12,26 +12,12 @@
 #
 # 元のモードに戻るには :reconnect のコマンドを実行します
 #
-module Earthquake
-  attr_accessor :tsunami_mode
-  def self.reconnect(options = nil)
-    config[:prompt] = "⚡ "
-    @tsunami_mode = nil
-    item_queue.clear
-    default = {
-      :host  => 'userstream.twitter.com',
-      :path  => '/2/user.json',
-      :ssl => true
-    }
-    start_stream(default.merge( options || {}))
-  end
-end
 
 Earthquake.init do
   command :tsunami do |params|
     keywords = params[1]
     search_keyword = keywords.split(/ /).first
-    reconnect(
+    start_stream(
       :host => 'stream.twitter.com',
       :path => '/1/statuses/filter.json',
       :method => 'POST',
@@ -42,7 +28,17 @@ Earthquake.init do
   end
   
   input_filter do |text|
-    text = "#{text} #{@tsunami_mode}" if text =~ /:update .*/ && !@tsunami_mode.nil?
+    unless @tsunami_mode.nil? || text[0] == ':'
+      text = "#{text} #{@tsunami_mode}"
+    end
+    text
+  end
+  
+  input_filter do |text|
+    if text =~ /^:reconnect$/
+      @tsunami_mode = nil
+      config[:prompt] = "⚡ "
+    end
     text
   end
 end
