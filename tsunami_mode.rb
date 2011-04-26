@@ -28,9 +28,7 @@ Earthquake.init do
   end
   
   input_filter do |text|
-    unless @tsunami_mode.nil? || text[0] == ':'
-      text = "#{text} #{@tsunami_mode}"
-    end
+    text = "#{text} #{@tsunami_mode}" if text =~ /:update .*/ && !@tsunami_mode.nil?
     text
   end
   
